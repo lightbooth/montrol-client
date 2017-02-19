@@ -32,4 +32,4 @@ connection.onclose = event => {
   log.debug('Connection closed - reconnecting in', event.reconnectDelay / 1000 + 's')
 }
 
-connection.onerror = err => log.debug('Connection error', err.code || err, err.reason)
+connection.onerror = err => log.debug('Connection error', err.code || err.message || err, err.reason)
