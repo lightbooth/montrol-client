@@ -12,7 +12,7 @@ const platforms = {
     }, fn)
   },
   darwin: (fn) => {
-    const file = path.join(os.tmpdir(), 'chopoon_screenshot.jpg')
+    const file = path.join(os.tmpdir(), 'montrol_screenshot.jpg')
     return cp.execFile('screencapture', ['-xa', '-t', 'jpg', file], err => {
       if (err)
         return fn(err)
