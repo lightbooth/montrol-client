@@ -3,7 +3,7 @@ const os = require('os')
     , path = require('path')
     , log = require('../log')
     , cp = require('child_process')
-    , config = require('./config')
+    , config = require('../config')
 
 const platforms = {
   linux: (fn) => {
