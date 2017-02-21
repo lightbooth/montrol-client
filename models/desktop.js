@@ -15,6 +15,7 @@ const handler = new Map()
     , maxUpdateFrequency = 1000 / config.fps
 
 handler.set('mouse.move.', data => robot.moveMouse.apply(robot, data.split(',')))
+handler.set('mouse.click.', data => robot.mouseClick(data))
 handler.set('mouse.down.', data => robot.mouseToggle('down', data))
 handler.set('mouse.up.', data => robot.mouseToggle('down', data))
 handler.set('keyboard.down.', key => robot.keyToggle(key === '' ? '.' : key, 'down'))
