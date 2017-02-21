@@ -1,12 +1,13 @@
-const cp = require('child_process')
+const os = require('os')
+    , fs = require('fs')
     , path = require('path')
     , log = require('../log')
-    , os = require('os')
-    , fs = require('fs')
+    , cp = require('child_process')
+    , config = require('./config')
 
 const platforms = {
   linux: (fn) => {
-    cp.execFile('screenshot', {
+    cp.execFile('screenshot', [config.desktopQuality], {
       encoding: 'buffer',
       maxBuffer: 10 * 1024 * 1024
     }, fn)
