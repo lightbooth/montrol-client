@@ -12,12 +12,11 @@
   },
   "author": "Rasmus Porsager <rasmus@porsager.com",
   "dependencies": {
-    "bufferutil": "2.0.1",
     "fs-extra": "2.0.0",
     "node-pty": "0.6.2",
     "pws": "0.2.2",
     "request": "2.79.0",
     "robotjs": "0.4.5",
-    "ws": "2.1.0"
+    "uws": "0.13.0"
   }
 }
