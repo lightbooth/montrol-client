@@ -7,9 +7,9 @@ const device = require('./device')
 robot.setKeyboardDelay(0)
 robot.setMouseDelay(0)
 
-let active = false
-  , previousBuffer = null
-  , lastSent = Date.now()
+let lastSent = Date.now()
+  , active = false
+  , timer
 
 const handler = new Map()
     , maxUpdateFrequency = 1000 / config.fps
@@ -21,10 +21,10 @@ handler.set('mouse.up.', data => robot.mouseToggle('up', data))
 handler.set('keyboard.press.', key => robot.keyTap(key === '' ? '.' : key))
 handler.set('keyboard.down.', key => robot.keyToggle(key === '' ? '.' : key, 'down'))
 handler.set('keyboard.up.', key => robot.keyToggle(key === '' ? '.' : key, 'up'))
-handler.set('off', () => active = false)
-handler.set('on', activate)
+handler.set('off', off)
+handler.set('on', on)
 
-device.on('disconnected', () => active = false)
+device.on('disconnected', off)
 
 device.on('desktop', data => {
   handler.forEach((value, key) =>
@@ -33,32 +33,26 @@ device.on('desktop', data => {
   )
 })
 
-function activate() {
-  if (!active) {
-    send()
-    active = true
-  }
+function off() {
+  clearTimeout(timer)
+  active = false
 }
 
-function send() {
+function on(force) {
+  if (!force && active)
+    return
+
   active = true
+  lastSent = Date.now()
   screenshot((err, buffer) => {
-    if (err) {
-      log.error(err)
-      return device.send('desktop.error.' + err)
-    }
-
-    if (!active || buffer === previousBuffer)
-      return
-
-    previousBuffer = buffer
+    if (err || !active)
+      return log.ifError(err) && off()
 
     device.send(buffer, { binary: true }, err => {
       if (err)
-        return log.ifError(err)
+        return log.error(err) && off()
 
-      setTimeout(send, lastSent + maxUpdateFrequency - Date.now())
-      lastSent = Date.now()
+      timer = setTimeout(on, maxUpdateFrequency - (Date.now() - lastSent), true)
     })
   })
 }
