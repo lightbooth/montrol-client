@@ -46,7 +46,6 @@ function on() {
 }
 
 function send(force) {
-  console.log(!active || running)
   if (!active || running)
     return
 
