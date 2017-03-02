@@ -9,6 +9,7 @@ robot.setMouseDelay(0)
 
 let lastSent = Date.now()
   , active = false
+  , running = false
   , timer
 
 const handler = new Map()
@@ -34,25 +35,34 @@ device.on('desktop', data => {
 })
 
 function off() {
-  clearTimeout(timer)
   active = false
+  running = false
+  clearTimeout(timer)
 }
 
-function on(force) {
-  if (!force && active)
+function on() {
+  active = true
+  send()
+}
+
+function send(force) {
+  console.log(!active || running)
+  if (!active || running)
     return
 
-  active = true
   lastSent = Date.now()
   screenshot((err, buffer) => {
     if (err || !active)
       return log.ifError(err) && off()
 
     device.send(buffer, { binary: true }, err => {
-      if (err)
+      if (err || !active)
         return log.error(err) && off()
 
-      timer = setTimeout(on, maxUpdateFrequency - (Date.now() - lastSent), true)
+      timer = setTimeout(() => {
+        running = false
+        send()
+      }, maxUpdateFrequency - (Date.now() - lastSent), true)
     })
   })
 }
