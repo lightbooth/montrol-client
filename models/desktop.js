@@ -35,12 +35,16 @@ device.on('desktop', data => {
 })
 
 function off() {
+  log('Desktop session ended')
   active = false
   running = false
   clearTimeout(timer)
 }
 
 function on() {
+  if (!active)
+    log('Desktop session started')
+
   active = true
   send()
 }
