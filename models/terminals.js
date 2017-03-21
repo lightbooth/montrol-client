@@ -7,7 +7,7 @@ const sessions = new Map()
     , handler = new Map()
 
 handler.set('input.', (session, data) => session.write(data))
-handler.set('cwd.', sendCWD)
+handler.set('cwd', sendCWD)
 handler.set('resize.', (session, data) => session.resize.apply(session, data.split(',').map(parseInt)))
 handler.set('close.', (session, data) => session.destroy())
 
