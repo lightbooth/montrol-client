@@ -72,7 +72,11 @@ function createSession(id) {
 
 function sendCWD(session, data) {
   getCWD(session.pid, (err, path) => {
-    device.send('terminal.' + session.id + '.cwd.' + data)
+    if (err || !path)
+      return log.error(err || 'Could not get cwd')
+
+    log(session.pid, 'cwd', path)
+    device.send('terminal.' + session.id + '.cwd.' + path.replace(/\n/g, ''))
   })
 }
 
