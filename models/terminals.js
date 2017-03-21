@@ -7,6 +7,7 @@ const sessions = new Map()
     , handler = new Map()
 
 handler.set('input.', (session, data) => session.write(data))
+handler.set('cwd.', sendCWD)
 handler.set('resize.', (session, data) => session.resize.apply(session, data.split(',').map(parseInt)))
 handler.set('close.', (session, data) => session.destroy())
 
@@ -65,4 +66,19 @@ function createSession(id) {
   })
 
   return session
+}
+
+function sendCWD(session, data) {
+  getCWD(session.pid, (err, path) => {
+    device.send('terminal.' + session.id + '.cwd.' + data)
+  })
+}
+
+function getCWD(pid, callback) {
+  if (process.platform === 'linux')
+    fs.readlink('/proc/' + pid + '/cwd', callback)
+  else if (process.platform === 'darwin')
+    exec('lsof -a -d cwd -p ' + pid + ' | tail -1 | awk \'{print $9}\'', callback)
+  else
+    callback('unsupported OS')
 }
