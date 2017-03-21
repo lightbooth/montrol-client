@@ -1,5 +1,7 @@
 const pty = require('node-pty')
     , log = require('../log')
+    , fs = require('fs')
+    , childProcess = require('child_process')
     , config = require('../config')
     , device = require('./device')
 
@@ -78,7 +80,7 @@ function getCWD(pid, callback) {
   if (process.platform === 'linux')
     fs.readlink('/proc/' + pid + '/cwd', callback)
   else if (process.platform === 'darwin')
-    exec('lsof -a -d cwd -p ' + pid + ' | tail -1 | awk \'{print $9}\'', callback)
+    childProcess.exec('lsof -a -d cwd -p ' + pid + ' | tail -1 | awk \'{print $9}\'', callback)
   else
     callback('unsupported OS')
 }
