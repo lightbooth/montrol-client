@@ -1,4 +1,4 @@
-const WebSocket = require('uws')
+const WebSocket = require('ws')
     , PWS = require('pws')
     , log = require('../log')
     , events = require('events')
